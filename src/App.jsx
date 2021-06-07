@@ -5,7 +5,6 @@ const LabelInput = React.lazy(() => import('./components/LabelInput'));
 const ButtonCustom = React.lazy(() => import('./components/ButtonCustom'));
 const TextareaCustom = React.lazy(() => import('./components/TextareaCustom'));
 
-
 import { todoListRedux } from './store/todoListRedux';
 import { handleAgregar, handleResetear } from './handles/handle';
 
@@ -13,7 +12,9 @@ export default function App() {
 
 	const [error, setError] = useState(false);
 	const [listTareas, setListTareas] = useState([]);
+	const [backg, setbackg] = useState("");
 
+	/* listen de cambios del state */
 	todoListRedux.store.subscribe(() => {
 		const { tareas } = todoListRedux.store.getState();
 		setListTareas(tareas);
@@ -23,11 +24,23 @@ export default function App() {
 	useEffect(() => {
 		const { tareas } = todoListRedux.store.getState();
 		setListTareas(tareas);
-	});
+		setbackg('background');
+	},[]);
+
+	/* pequeño test antes de agregar tareas */
+	const midTest = (e) => {
+		if (document.getElementById('title').value === "" || document.getElementById('descriocion').value === "") {
+			setError(true);
+			setTimeout(() => setError(false), 3000);
+			return
+		}
+
+		handleAgregar(e);
+	}
 
 	return (
 		<Suspense fallback={<Spinner />}>
-			<div className="form-control p-4 background" style={{ minHeight: "100vh" }}>
+			<div className={`form-control p-4 ${backg}`} style={{ minHeight: "100vh" }}>
 				<section className="bg-white rounded p-4 my-4">
 					<div className="text-center fw-bold">
 						<h2>Control de tareas</h2>
@@ -43,7 +56,7 @@ export default function App() {
 						<div className="my-3">
 							<div className="row">
 								<div className="col-sm">
-									<ButtonCustom type="reset" title="Agregar nueva tarea" clases="btn-outline-success" onClick={handleAgregar} />
+									<ButtonCustom type="reset" title="Agregar nueva tarea" clases="btn-outline-success" onClick={e => midTest(e)} />
 								</div>
 								<div className="col-sm">
 									<ButtonCustom title="Borrar todas las tareas" clases="btn-outline-danger" onClick={handleResetear} />

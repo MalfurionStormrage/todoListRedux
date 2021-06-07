@@ -7,12 +7,6 @@ export const handleAgregar = (e) => {
 
 		e.preventDefault();
 
-		if (document.getElementById('title').value === "" || document.getElementById('descriocion').value === "") {
-			setError(true);
-			setTimeout(() => setError(false), 3000);
-			return
-		}
-
 		const datos = {
 			id: Date.now(),
 			title: document.getElementById('title').value,
